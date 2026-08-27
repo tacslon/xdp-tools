@@ -1,4 +1,4 @@
-.TH "xdp-filter" "8" "JUNE  9, 2026" "V1.6.3" "A simple XDP-powered packet filter"
+.TH "xdp-filter" "8" "JUNE  9, 2026" "V1.6.3" "A simple XDP-powered packet filter" "" ""
 .SH "NAME"
 xdp-filter \- a simple XDP-powered packet filter
 .SH "SYNOPSIS"
@@ -10,7 +10,6 @@ packets per second on a single CPU core.
 .SS "Running xdp-filter"
 .PP
 The syntax for running xdp-filter is:
-
 .RS
 .nf
 \fCxdp-filter COMMAND [options]
@@ -27,7 +26,6 @@ Where COMMAND can be one of:
 \fP
 .fi
 .RE
-
 .PP
 Each command, and its options are explained below. Or use \fIxdp\-filter COMMAND
 \-\-help\fP to see the options for each command.
@@ -38,13 +36,10 @@ accomplished with the \fIload\fP command, which takes the name of the interface 
 parameter, and optionally allows specifying the features that should be
 included. By default all features are loaded, but de-selecting some features can
 speed up the packet matching, and increase performance by a substantial amount.
-
 .PP
 The syntax for the \fIload\fP command is:
-
 .PP
 \fIxdp\-filter load [options] <ifname>\fP
-
 .PP
 Where \fI<ifname>\fP is the name of the interface to load \fIxdp\-filter\fP onto, and
 must be specified. The supported options are:
@@ -60,7 +55,6 @@ This sets the policy \fIxdp\-filter\fP applies to packets \fBnot\fP matched by a
 filter rules. The default is \fIallow\fP, in which packets not matching any rules
 are allowed to pass. The other option is \fIdeny\fP, in which \fBall\fP packets are
 dropped \fBexcept\fP those matched by the filter options.
-
 .PP
 \fIxdp\-filter\fP cannot be loaded simultaneously in \fIdeny\fP and \fIallow\fP policy modes
 on the system. Note that loading \fIxdp\-filter\fP in \fIdeny\fP mode will drop all
@@ -71,7 +65,6 @@ is needed to avoid being locked out of a remote system.
 Use this option to select which features to include when loaded \fIxdp\-filter\fP.
 The default is to load all available features. So select individual features
 specify one or more of these:
-
 .IP \(bu 4
 \fBtcp\fP: Support filtering on TCP port number
 .IP \(bu 4
@@ -82,7 +75,6 @@ specify one or more of these:
 \fBipv4\fP: Support filtering on IPv4 addresses
 .IP \(bu 4
 \fBethernet\fP: Support filtering on Ethernet MAC addresses
-
 .PP
 Specify multiple features by separating them with a comma. E.g.: \fItcp,udp,ipv6\fP.
 .SS "-v, --verbose"
@@ -95,13 +87,10 @@ Display a summary of the available options
 .PP
 The \fIunload\fP command unloads \fIxdp\-filter\fP from one (or all) interfaces, and
 cleans up the program state.
-
 .PP
 The syntax for the \fIload\fP command is:
-
 .PP
 \fIxdp\-filter unload [options] <ifname>\fP
-
 .PP
 Where \fI<ifname>\fP is the name of the interface to unload \fIxdp\-filter\fP from, and
 must be specified unless the \fB--all\fP option is used. The supported options are:
@@ -109,7 +98,6 @@ must be specified unless the \fB--all\fP option is used. The supported options a
 .PP
 Specify this option to remove \fIxdp\-filter\fP from all interfaces it was loaded
 onto. If this option is specified, no \fI<ifname>\fP is needed.
-
 .PP
 This option can also be used to clean up all \fIxdp\-filter\fP state if the XDP
 program(s) were unloaded by other means.
@@ -120,7 +108,6 @@ default, all BPF maps no longer needed by any loaded program are removed.
 However, this will also remove the contents of the maps (the filtering rules),
 so this option can be used to keep the maps around so the rules persist until
 \fIxdp\-filter\fP is loaded again.
-
 .PP
 Caution: the persisted maps don't record the policy they were created
 under. Reloading \fIxdp\-filter\fP afterwards under the opposite policy
@@ -139,13 +126,10 @@ Display a summary of the available options
 Use the \fIport\fP command to add a TCP or UDP port to the \fIxdp\-filter\fP match list.
 For this to work, \fIxdp\-filter\fP must be loaded with either the \fBudp\fP or the \fBtcp\fP
 feature (or both) on at least one interface.
-
 .PP
 The syntax for the \fIport\fP command is:
-
 .PP
 \fIxdp\-filter port [options] <port>\fP
-
 .PP
 Where \fI<port>\fP is the port number to add (or remove if the \fB--remove\fP is
 specified). The supported options are:
@@ -177,13 +161,10 @@ Display a summary of the available options
 .PP
 Use the \fIip\fP command to add an IPv6 or an IPv4 address to the \fIxdp\-filter\fP match
 list.
-
 .PP
 The syntax for the \fIip\fP command is:
-
 .PP
 \fIxdp\-filter ip [options] <ip>\fP
-
 .PP
 Where \fI<ip>\fP is the IP address to add (or remove if the \fB--remove\fP is
 specified). Either IPv4 or IPv6 addresses can be specified, but \fIxdp\-filter\fP
@@ -214,13 +195,10 @@ Display a summary of the available options
 Use the \fIether\fP command to add an Ethernet MAC address to the \fIxdp\-filter\fP match
 list. For this to work, \fIxdp\-filter\fP must be loaded with either the \fBethernet\fP
 feature on at least one interface.
-
 .PP
 The syntax for the \fIether\fP command is:
-
 .PP
 \fIxdp\-filter ether [options] <addr>\fP
-
 .PP
 Where \fI<addr>\fP is the MAC address to add (or remove if the \fB--remove\fP is
 specified). The supported options are:
@@ -249,13 +227,10 @@ Display a summary of the available options
 The \fIstatus\fP command prints the current status of \fIxdp\-filter\fP: Which interfaces
 it is loaded on, the current list of rules, and some statistics for how many
 packets have been processed in total, and how many times each rule has been hit.
-
 .PP
 The syntax for the \fIstatus\fP command is:
-
 .PP
 \fIxdp\-filter status [options]\fP
-
 .PP
 Where the supported options are:
 .SS "-v, --verbose"
@@ -272,13 +247,10 @@ the number in the last polling interval, converted to packets (and bytes) per
 second. This can be used to inspect the performance of \fIxdp\-filter\fP, and to
 compare the performance of the different feature sets selectable by the \fIload\fP
 parameter.
-
 .PP
 The syntax for the \fIpoll\fP command is:
-
 .PP
 \fIxdp\-filter poll [options]\fP
-
 .PP
 Where the supported options are:
 .SS "-i, --interval <interval>"
@@ -294,7 +266,6 @@ Display a summary of the available options
 .PP
 To filter all packets arriving on port 80 on eth0, issue the
 following commands:
-
 .RS
 .nf
 \fC# xdp-filter load eth0 -f tcp,udp
@@ -302,11 +273,9 @@ following commands:
 \fP
 .fi
 .RE
-
 .PP
 To filter all packets \fBexcept\fP those from IP address fc00:dead:cafe::1 issue the
 following commands (careful, this can lock you out of remote access!):
-
 .RS
 .nf
 \fC# xdp-filter load eth0 -f ipv6 -p deny
@@ -314,11 +283,9 @@ following commands (careful, this can lock you out of remote access!):
 \fP
 .fi
 .RE
-
 .PP
 To allow packets from \fBeither\fP IP fc00:dead:cafe::1 \fBor\fP arriving on port 22,
 issue the following (careful, this can lock you out of remote access!):
-
 .RS
 .nf
 \fC# xdp-filter load eth0 -f ipv6,tcp -p deny

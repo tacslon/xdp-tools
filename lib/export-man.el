@@ -1,4 +1,4 @@
-;;; export-man.el -- Export man page and filter result
+;;; export-man.el -- Export man page and filter result  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;;

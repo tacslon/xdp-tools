@@ -1,4 +1,4 @@
-.TH "libxdp" "3" "January 15, 2026" "v1.6.3" "libxdp - library for loading XDP programs" 
+.TH "libxdp" "3" "January 15, 2026" "v1.6.3" "libxdp - library for loading XDP programs" "" "" 
 .SH "NAME"
 libxdp \- library for attaching XDP programs and using AF_XDP sockets
 .SH "SYNOPSIS"
@@ -7,7 +7,6 @@ This directory contains the files for the \fIlibxdp\fP library for
 attaching XDP programs to network interfaces and using AF_XDP
 sockets. The library is fairly lightweight and relies on \fIlibbpf\fP to
 do the heavy lifting for processing eBPF object files etc.
-
 .PP
 \fILibxdp\fP provides two primary features on top of \fIlibbpf\fP. The first is
 the ability to load multiple XDP programs in sequence on a single
@@ -17,7 +16,6 @@ makes it possible to attach an eBPF program as a replacement for a
 global function in another (already loaded) eBPF program. The second
 main feature is helper functions for configuring AF_XDP sockets as
 well as reading and writing packets from these sockets.
-
 .PP
 Some of the functionality provided by libxdp depends on particular kernel
 features; see the "Kernel feature compatibility" section below for details.
@@ -25,7 +23,6 @@ features; see the "Kernel feature compatibility" section below for details.
 .PP
 Basic usage of libxdp from an application is quite straight forward. The
 following example loads, then unloads, an XDP program from the 'lo' interface:
-
 .RS
 .nf
 \fC#define IFINDEX 1
@@ -43,13 +40,11 @@ xdp_program__close(prog);
 \fP
 .fi
 .RE
-
 .PP
 The \fIxdp_program\fP structure is an opaque structure that represents a single XDP
 program. \fIlibxdp\fP contains functions to create such a struct either from a BPF
 object file on disk, from a \fIlibbpf\fP BPF object, or from an identifier of a
 program that is already loaded into the kernel:
-
 .RS
 .nf
 \fCstruct xdp_program *xdp_program__from_bpf_obj(struct bpf_object *obj,
@@ -66,7 +61,6 @@ struct xdp_program *xdp_program__from_pin(const char *pin_path);
 \fP
 .fi
 .RE
-
 .PP
 The functions that open a BPF object or file need the function name of the XDP
 program as well as the file name or object, since an ELF file can contain
@@ -75,14 +69,12 @@ without a path, and will look for the object in \fILIBXDP_OBJECT_PATH\fP which
 defaults to \fI/usr/lib/bpf\fP (alternatively \fI/usr/lib64/bpf\fP or \fI/usr/local/lib/bpf\fP,
 depending on which \fIPREFIX\fP libxdp was compiled with). This is convenient
 for applications shipping pre-compiled eBPF object files.
-
 .PP
 When libxdp is compiled with the DEBUG flag, it will additionally look
 for BPF object files in the current directory, before checking the
 system-wide directory. This can be convenient during development to avoid
 older versions of a BPF program being loaded. However, it should not be used in
 production, as the shadowing of system BPF programs can be a security issue.
-
 .PP
 The \fIxdp_program__attach()\fP function will attach the program to an interface,
 building a dispatcher program to execute it. Multiple programs can be attached
@@ -92,7 +84,6 @@ based on the chain call actions defined for each program (see the \fBProgram
 metadata\fP section below). Because the loading process involves modifying the
 attach type of the program, the attach functions only work with \fIstruct
 xdp_program\fP objects that have not yet been loaded into the kernel.
-
 .PP
 When using the attach functions to attach to an interface that already has an
 XDP program loaded, libxdp will attempt to add the program to the list of loaded
@@ -133,7 +124,6 @@ The metadata outlined above is specified as BTF information embedded in the ELF
 file containing the XDP program. The \fIxdp_helpers.h\fP file shipped with libxdp
 contains helper macros to include this information, which can be used as
 follows:
-
 .RS
 .nf
 \fC#include <bpf/bpf_helpers.h>
@@ -147,7 +137,6 @@ struct {
 \fP
 .fi
 .RE
-
 .PP
 This example specifies that the XDP program in \fImy_xdp_func\fP should have
 priority 10 and that its chain call actions are \fIXDP_PASS\fP and \fIXDP_DROP\fP.
@@ -162,7 +151,6 @@ and modify the metadata on an XDP program. Modification is only possible before
 a program is attached on an interface. These functions won't modify the BTF
 information itself, but the new values will be stored as part of the program
 attachment.
-
 .RS
 .nf
 \fCunsigned int xdp_program__run_prio(const struct xdp_program *xdp_prog);
@@ -186,19 +174,16 @@ To support multiple non-offloaded programs on the same network interface,
 call each component program in turn, expect the return code, and then chain call
 to the next program based on the chain call actions of the previous program (see
 the \fBProgram metadata\fP section above).
-
 .PP
 While applications using \fIlibxdp\fP do not need to know the details of the
 dispatcher program to just load an XDP program unto an interface, \fIlibxdp\fP does
 expose the dispatcher and its attached component programs, which can be used to
 list the programs currently attached to an interface.
-
 .PP
 The structure used for this is \fIstruct xdp_multiprog\fP, which can only be
 constructed from the programs loaded on an interface based on ifindex. The API
 for getting a multiprog reference and iterating through the attached programs
 looks like this:
-
 .RS
 .nf
 \fCstruct xdp_multiprog *xdp_multiprog__get_from_ifindex(int ifindex);
@@ -213,7 +198,6 @@ bool xdp_multiprog__is_legacy(const struct xdp_multiprog *mp);
 \fP
 .fi
 .RE
-
 .PP
 If a non-offloaded program is attached to the interface which \fIlibxdp\fP doesn't
 recognise as a dispatcher program, an \fIxdp_multiprog\fP structure will still be
@@ -235,7 +219,6 @@ the last reference to them disappears. To prevent this from happening, \fIlibxdp
 will pin the component program references in \fIbpffs\fP before attaching the
 dispatcher to the network interface. The pathnames generated for pinning is as
 follows:
-
 .IP \(em 4
 /sys/fs/bpf/xdp/dispatch-IFINDEX-DID - dispatcher program for IFINDEX with BPF program ID DID
 .IP \(em 4
@@ -248,7 +231,6 @@ follows:
 /sys/fs/bpf/xdp/dispatch-IFINDEX-DID/prog1-link - component program 1, bpf_link reference
 .IP \(em 4
 etc, up to ten component programs
-
 .PP
 If set, the \fILIBXDP_BPFFS\fP environment variable will override the location of
 \fIbpffs\fP, but the \fIxdp\fP subdirectory is always used. If no \fIbpffs\fP is mounted,
@@ -266,7 +248,6 @@ but has now been moved over to libxdp as it is a better fit for this
 library. As of the 1.0 release of libbpf, the AF_XDP socket support
 will be removed and all future development will be performed
 in libxdp instead.
-
 .PP
 For an overview of AF_XDP sockets, please refer to this Linux Plumbers
 paper
@@ -274,7 +255,6 @@ paper
 and the documentation in the Linux kernel
 (Documentation/networking/af_xdp.rst or
 \fIhttps://www.kernel.org/doc/html/latest/networking/af_xdp.html\fP).
-
 .PP
 For an example on how to use the interface, take a look at the AF_XDP-example
 and AF_XDP-forwarding programs in the bpf-examples repository:
@@ -293,13 +273,11 @@ XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD that can be set in the
 libxdp_flags field (also called libbpf_flags for compatibility
 reasons). This will make libxdp not load any XDP program or set and
 BPF maps which is a must if users want to add their own XDP program.
-
 .PP
 If there is already a socket created with socket(AF_XDP, SOCK_RAW, 0)
 not bound and not tied to any umem, file descriptor of this socket can
 be used in param opts of xsk_umem__create_opts(), which is a recommended
 way of umem creation.
-
 .RS
 .nf
 \fCstruct xsk_umem *xsk_umem__create_opts(void *umem_area,
@@ -335,12 +313,10 @@ void xsk_socket__delete(struct xsk_socket *xsk);
 \fP
 .fi
 .RE
-
 .PP
 There are also two helper function to get the file descriptor of a
 umem or a socket. These are needed when using standard Linux syscalls
 such as poll(), recvmsg(), sendto(), etc.
-
 .RS
 .nf
 \fCint xsk_umem__fd(const struct xsk_umem *umem);
@@ -348,7 +324,6 @@ int xsk_socket__fd(const struct xsk_socket *xsk);
 \fP
 .fi
 .RE
-
 .PP
 The control path also provides two APIs for setting up AF_XDP sockets when the
 process that is going to use the AF_XDP socket is non-privileged. These two
@@ -358,7 +333,6 @@ xsk_socket__create executed on the non-privileged process will then skip these
 two steps. For an example on how to use these, please take a look at the
 AF_XDP-example program in the bpf-examples repository:
 \fIhttps://github.com/xdp-project/bpf-examples/tree/main/AF_XDP-example\fP.
-
 .RS
 .nf
 \fCint xsk_setup_xdp_prog(int ifindex, int *xsks_map_fd);
@@ -366,7 +340,6 @@ int xsk_socket__update_xskmap(struct xsk_socket *xsk, int xsks_map_fd);
 \fP
 .fi
 .RE
-
 .PP
 To further reduce required level of privileges, an AF_XDP socket can be created
 beforehand with socket(AF_XDP, SOCK_RAW, 0) and passed to a non-privileged
@@ -390,7 +363,6 @@ you can read them from the ring. Once you are done reading them, you
 packets. There is also a \fIcancel\fP operation for consumer rings if the
 application does not want to consume all packets received with the
 peek operation.
-
 .RS
 .nf
 \fC__u32 xsk_ring_prod__reserve(struct xsk_ring_prod *prod, __u32 nb, __u32 *idx);
@@ -401,7 +373,6 @@ void xsk_ring_cons__release(struct xsk_ring_cons *cons, __u32 nb);
 \fP
 .fi
 .RE
-
 .PP
 The functions below are used for reading and writing the descriptors
 of the rings. xsk_ring_prod__fill_addr() and xsk_ring_prod__tx_desc()
@@ -410,7 +381,6 @@ xsk_ring_cons__comp_addr and xsk_ring_cons__rx_desc \fBreads\fP entries from
 the completion and Rx rings respectively. The \fIidx\fP is the parameter
 returned in the xsk_ring_prod__reserve or xsk_ring_cons__peek
 calls. To advance to the next entry, simply do \fIidx++\fP.
-
 .RS
 .nf
 \fC__u64 *xsk_ring_prod__fill_addr(struct xsk_ring_prod *fill, __u32 idx);
@@ -420,7 +390,6 @@ const struct xdp_desc *xsk_ring_cons__rx_desc(const struct xsk_ring_cons *rx, __
 \fP
 .fi
 .RE
-
 .PP
 The xsk_umem functions are used to get a pointer to the packet data
 itself, always located inside the umem. In the default aligned mode,
@@ -429,7 +398,6 @@ unaligned mode, you need to use the three last function below as the
 offset used is carried in the upper 16 bits of the addr. Therefore,
 you cannot use the addr straight from the descriptor in the unaligned
 case.
-
 .RS
 .nf
 \fCvoid *xsk_umem__get_data(void *umem_area, __u64 addr);
@@ -439,7 +407,6 @@ __u64 xsk_umem__add_offset_to_addr(__u64 addr);
 \fP
 .fi
 .RE
-
 .PP
 There is one more function in the data path and that checks if the
 need_wakeup flag is set. Use of this flag is highly encouraged and
@@ -451,14 +418,12 @@ situation. \fIrecvmsg()\fP if you are \fBreceiving\fP, or \fIsendto()\fP if you 
 \fBsending\fP. \fIpoll()\fP can be used for both cases and provide the ability to
 sleep too, as with any other socket. But note that poll is a slower
 operation than the other two.
-
 .RS
 .nf
 \fCint xsk_ring_prod__needs_wakeup(const struct xsk_ring_prod *r);
 \fP
 .fi
 .RE
-
 .PP
 For an example on how to use all these APIs, take a look at the AF_XDP-example
 and AF_XDP-forwarding programs in the bpf-examples repository:
@@ -471,7 +436,6 @@ used with kernel 5.10 or newer, unless the commits mentioned below have been
 backported. However, libxdp will probe the kernel and transparently fall back to
 legacy loading procedures, so it is possible to use the library with older
 versions, although some features will be unavailable, as detailed below.
-
 .PP
 The ability to attach multiple BPF programs to a single interface relies on the
 kernel "BPF program extension" feature which was introduced by commit
@@ -481,7 +445,6 @@ multiple programs, a further refinement added by commit 4a1e7c0c63e0 ("bpf:
 Support attaching freplace programs to multiple attach points") is needed; this
 first appeared in the upstream kernel version 5.10. The functionality relies on
 the "BPF trampolines" feature which is available on architectures that support it.
-
 .PP
 The support matrix is as follows:
 .IP \(em 4
@@ -492,7 +455,6 @@ Kernels 5.6+ can attach multiple programs if they are all attached at the same t
 Kernels 5.10+ have full support for XDP multiprog on architectures supporting BPF trampolines
 .IP \(em 4
 On architectures without BPF trampoline support, only a single program can be attached to each interface
-
 .PP
 To load AF_XDP programs, kernel support for AF_XDP sockets needs to be included
 and enabled in the kernel build. In addition, when using AF_XDP sockets, an XDP
@@ -502,12 +464,10 @@ commit fada7fdc83c0 ("bpf: Allow bpf_map_lookup_elem() on an xskmap") in kernel
 5.3. This means that the minimum required kernel version for using AF_XDP is
 kernel 5.3; however, for the AF_XDP XDP program to co-exist with other programs,
 the same constraints for multiprog applies as outlined above.
-
 .PP
 Note that some Linux distributions backport features to earlier kernel versions,
 especially in enterprise kernels; for instance, Red Hat Enterprise Linux kernels
 include everything needed for libxdp to function since RHEL 8.5.
-
 .PP
 Finally, XDP programs loaded using the multiprog facility must include type
 information (using the BPF Type Format, BTF). To get this, compile the programs

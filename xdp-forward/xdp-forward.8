@@ -1,4 +1,4 @@
-.TH "xdp-forward" "8" "OCTOBER 11, 2024" "V1.6.3" "XDP program loader"
+.TH "xdp-forward" "8" "OCTOBER 11, 2024" "V1.6.3" "XDP program loader" "" ""
 .SH "NAME"
 xdp-forward \- the XDP forwarding plane
 .SH "SYNOPSIS"
@@ -9,7 +9,6 @@ forwarding between. The userspace component of xdp-forward will then configure
 and load XDP programs on those interfaces, and forward packets between them
 using XDP_REDIRECT, using the kernel routing table or netfilter flowtable to
 determine the destination for each packet.
-
 .PP
 Any packets that xdp-forward does not know how to forward will be passed up to
 the networking stack and handled by the kernel like normal. Depending on the
@@ -18,7 +17,6 @@ See the sectinon on \fBOperating modes\fP below.
 .SS "Running xdp-forward"
 .PP
 The syntax for running xdp-forward is:
-
 .RS
 .nf
 \fCxdp-forward COMMAND [options]
@@ -30,26 +28,21 @@ Where COMMAND can be one of:
 \fP
 .fi
 .RE
-
 .PP
 Each command, and its options are explained below. Or use \fIxdp\-forward COMMAND
 \-\-help\fP to see the options for each command.
 .SH "The LOAD command"
 .PP
 The \fIload\fP command loads the XDP forwarding plane on a list of interfaces.
-
 .PP
 The syntax for the \fIload\fP command is:
-
 .PP
 \fIxdp\-forward load [options] <ifname...>\fP
-
 .PP
 Where \fI<ifname...>\fP is the name of the set of interfaces to forward packets
 between. An XDP program will be loaded on each interface, configured to forward
 packets to all other interfaces in the set (using the kernel routing table to
 determine the destination interface of each packet).
-
 .PP
 The supported options are:
 .SS "-f, --fwd-mode <mode>"
@@ -84,13 +77,10 @@ Display a summary of the available options
 .SH "The UNLOAD command"
 .PP
 The \fIunload\fP command is used for unloading programs from an interface.
-
 .PP
 The syntax for the \fIunload\fP command is:
-
 .PP
 \fIxdp\-forward unload [options] <ifname...>\fP
-
 .PP
 Where \fI<ifname...>\fP is the list of interfaces to unload the XDP forwarding plane
 from. Note that while \fIxdp\-forward\fP will examine the XDP programs loaded on each
@@ -98,7 +88,6 @@ interface and make sure to only unload its own program, it will not check that
 the list of supplied interfaces is the same as the one supplied during load. As
 such, it is possible to perform a partial unload by supplying a different list
 of interfaces, which may lead to unexpected behaviour.
-
 .PP
 The supported options are:
 .SS "-v, --verbose"
@@ -120,7 +109,6 @@ the lookup fails will be passed up to the stack. This includes packets that
 require neighbour discovery for the next hop, meaning that packets will
 periodically pass up the kernel stack for next hop discovery (initially, and
 when the nexthop entry expires).
-
 .PP
 Note that no checks other than the FIB lookup is performed; in particular, this
 completely bypasses the netfilter subsystem, so firewall rules will not be
@@ -152,7 +140,6 @@ improve performance (but won't obey the policy of those rules, obviously).
 .PP
 In order to enable flowtable offloading for tcp and udp traffic between NICs
 n0 and n1, issue the following commands:
-
 .RS
 .nf
 \fC#nft -f /dev/stdin <<EOF

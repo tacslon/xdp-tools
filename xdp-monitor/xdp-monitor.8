@@ -1,33 +1,28 @@
-.TH "xdp-monitor" "8" "DECEMBER 12, 2022" "V1.6.3" "A simple XDP monitoring tool"
+.TH "xdp-monitor" "8" "DECEMBER 12, 2022" "V1.6.3" "A simple XDP monitoring tool" "" ""
 .SH "NAME"
 XDP-monitor \- a simple BPF-powered XDP monitoring tool
 .SH "SYNOPSIS"
 .PP
 XDP-monitor is a tool that monitors various XDP related statistics and events using
 BPF tracepoints infrastructure, trying to be as low overhead as possible.
-
 .PP
 Note that by default, statistics for successful XDP redirect events is disabled,
 as that leads to a per-packet BPF tracing overhead, which while being low
 overhead, can lead to packet processing degradation.
-
 .PP
 This tool relies on the BPF raw tracepoints infrastructure in the kernel.
-
 .PP
 There is more information on the meaning of the output in both default (terse)
 and verbose output mode, in the \fIOutput Format Description\fP section.
 .SS "Running xdp-monitor"
 .PP
 The syntax for running xdp-monitor is:
-
 .RS
 .nf
 \fCxdp-monitor [options]
 \fP
 .fi
 .RE
-
 .PP
 The supported options are:
 .SS "-i, --interval <SECONDS>"
@@ -58,10 +53,8 @@ Display a summary of the available options
 By default, redirect success statistics are disabled, use \fI\-\-stats\fP to enable.
 The terse output mode is default, extended output mode can be activated using
 the \fI\-\-extended\fP command line option.
-
 .PP
 SIGQUIT (Ctrl + \\) can be used to switch the mode dynamically at runtime.
-
 .PP
 Terse mode displays at most the following fields:
 .RS
@@ -73,7 +66,6 @@ xmit/s	Number of packets transmitted on the output device per second
 \fP
 .fi
 .RE
-
 .PP
 Verbose output mode displays at most the following fields:
 .RS
